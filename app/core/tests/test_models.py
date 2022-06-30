@@ -1,8 +1,11 @@
 """
 Test for models
 """
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+
+from core import models
 
 
 class ModelTest(TestCase):
@@ -28,6 +31,7 @@ class ModelTest(TestCase):
 			['TEST3@EXAMPLE.COM', 'TEST3@example.com'],
 			['test4@example.com','test4@example.com'],
  		]
+
 		for email, expected in sample_emails:
 			user = get_user_model().objects.create_user(email, 'sample23')
 			self.assertEqual(user.email, expected)
@@ -43,5 +47,21 @@ class ModelTest(TestCase):
 			'test@example.com',
 			'test123',
 		)
+
 		self.assertTrue(user.is_superuser)
 		self.assertTrue(user.is_staff)
+
+	def test_create_personel(self):
+		"""Test creating a personel data is successful."""
+		user = get_user_model().objects.create_user(
+			'test@example.com',
+			'testpass123'
+		)
+		personel = models.Personel.objects.create(
+			user=user,
+			full_name='Test User',
+			department='Sertifikasi',
+			position='Subkoordinator',
+		)
+
+		self.assertEqual(str(personel), personel.full_name)
