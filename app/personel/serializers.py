@@ -11,6 +11,6 @@ class PersonelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Personel
-        field = ['id', 'full_name', 'department', 'position']
+        fields = ['id', 'full_name', 'department', 'position', 'user']
         read_only_fields = ['id']
 

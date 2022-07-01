@@ -19,7 +19,7 @@ def create_personel(user, **params):
     defaults = {
         'full_name': 'Auditor Internal',
         'department': 'Sertifikasi',
-        'position': 'subkoordinator'
+        'position': 'subkoordinator',
     }
     defaults.update(params)
 
@@ -59,9 +59,9 @@ class PrivatePersonelAPITest(TestCase):
         res = self.client.get(PERSONELS_URL)
 
         personels = Personel.objects.all().order_by('-id')
-        serializer = PersonelSerializer(personel, many=True)
+        serializer = PersonelSerializer(personels, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.asserEqual(res.data, serializer.data)
+        self.assertEqual(res.data, serializer.data)
 
     def test_personel_list_limited_to_user(self):
         """Test list of personel is limited to authenticated user."""
@@ -75,6 +75,6 @@ class PrivatePersonelAPITest(TestCase):
         res = self.client.get(PERSONELS_URL)
 
         personels = Personel.objects.filter(user=self.user)
-        serializer = PersonelSerializer(personel, many=True)
+        serializer = PersonelSerializer(personels, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
