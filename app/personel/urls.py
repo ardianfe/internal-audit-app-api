@@ -10,8 +10,10 @@ from rest_framework.routers import DefaultRouter
 
 from personel import views
 
-router =DefaultRouter()
+router = DefaultRouter()
 router.register('personels', views.PersonelViewSet)
+router.register('areas', views.AreaViewSet)
+router.register('subareas', views.SubAreaViewSet)
 
 app_name = 'personel'
 

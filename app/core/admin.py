@@ -45,3 +45,7 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Personel)
+admin.site.register(models.Area)
+admin.site.register(models.SubArea)
+admin.site.register(models.Audit)
+admin.site.register(models.Correctiveaction)

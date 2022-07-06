@@ -52,8 +52,80 @@ class Personel(models.Model):
         on_delete=models.CASCADE,
     )
     full_name = models.CharField(max_length=255)
-    department = models.CharField(max_length=255)
-    position = models.CharField(max_length=255)
+    birthday = models.CharField(max_length=255, blank=True)
+    is_coordinator = models.BooleanField(default=False)
+    is_subcoordinator = models.BooleanField(default=False)
+    area = models.ForeignKey('Area', blank=True, null=True, on_delete=models.CASCADE)
+    sub_area = models.ForeignKey('SubArea', blank=True, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.full_name
+
+
+class Area(models.Model):
+    """Area for audit filtering."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    
+    def __str__(self):
+        return self.name
+
+
+class SubArea(models.Model):
+    """Sub for Area"""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    area_id = models.ForeignKey(Area, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
+class Audit(models.Model):
+    """NcForm Object."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE,
+    )
+    title = models.CharField(max_length=255)
+    audit_date = models.CharField(max_length=255)
+    area = models.ForeignKey('Area', on_delete=models.CASCADE)
+    sub_area = models.ForeignKey('SubArea', on_delete=models.CASCADE)
+    standard = models.CharField(max_length=255)
+    nc_point = models.CharField(max_length=255)
+    nc_source = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    is_verified = models.BooleanField(default=False)
+    verified_date = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.title
+
+class Correctiveaction(models.Model):
+    """Correctiveactions object."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE,
+    )
+    cause_analysis = models.TextField(blank=True)
+    corrective_actions = models.TextField(blank=True)
+    due_date = models.CharField(max_length=255)
+    prepared_by = models.ForeignKey('Personel', blank=True, on_delete=models.CASCADE)
+    pre_actions = models.TextField(blank=True)
+    links = models.CharField(max_length=255)
+    audit = models.OneToOneField('Audit', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.corrective_actions
+
+
+
+

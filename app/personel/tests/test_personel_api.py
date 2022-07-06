@@ -27,8 +27,7 @@ def create_personel(user, **params):
     """Create and return a personel data. """
     defaults = {
         'full_name': 'Auditor Internal',
-        'department': 'Sertifikasi',
-        'position': 'subkoordinator',
+        'birthday': '1980-01-01'
     }
     defaults.update(params)
 
@@ -102,8 +101,7 @@ class PrivatePersonelAPITest(TestCase):
         """Test creating personal data."""
         payload = {
             'full_name': 'Auditor Internal',
-            'department': 'Sertifikasi',
-            'position': 'Koordinator',
+            'birthday': '1980-01-01'
         }
         res = self.client.post(PERSONELS_URL, payload)
 
