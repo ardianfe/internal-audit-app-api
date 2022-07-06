@@ -47,7 +47,7 @@ class SubAreaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubArea
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'area_id']
         read_only_fields = ['id']
 
 
@@ -55,4 +55,4 @@ class SubAreaDetailSerializer(SubAreaSerializer):
     """Serializer for subarea detail view"""
 
     class Meta(SubAreaSerializer.Meta):
-        fields = AreaSerializer.Meta.fields + ['description', 'area_id']
+        fields = AreaSerializer.Meta.fields + ['description']
