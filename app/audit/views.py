@@ -1,6 +1,12 @@
 """
 Views for the audit APIs.
 """
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes,
+)
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -9,6 +15,18 @@ from core.models import Audit, Correctiveaction
 from audit import serializers
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                'sub-area',
+                OpenApiTypes.STR,
+                description='Coma separated list of ID to filter',
+            )
+        ]
+    )
+)
+
 class AuditViewSet(viewsets.ModelViewSet):
     """View for manage audit APIs."""
     serializer_class = serializers.AuditDetailSerializer
@@ -16,12 +34,23 @@ class AuditViewSet(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+    # def _params_to_ints(self,qs):
+    #     """Convert a list of strings to integers."""
+    #     return [int(str_id) for str_id in qs.split(',')]
+
     def get_queryset(self):
         """Retrieve personels for authenticated user."""
-        if self.request.user.is_superuser:
-            return self.queryset.order_by('-id')
-
-        return self.queryset.filter(user=self.request.user).order_by('-id')
+        user = self.request.user
+        if user.is_staff:
+            return self.queryset.filter(user=self.request.user).order_by('-id')
+        
+        sub_area = self.request.query_params.get('sub-area')
+        queryset = self.queryset
+        if sub_area:
+            sub_area_id = sub_area
+            queryset = queryset.filter(sub_area=sub_area_id)
+        
+        return queryset.order_by('-id').distinct()
 
     def get_serializer_class(self):
         """Return the serializer class for request."""

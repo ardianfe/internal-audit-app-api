@@ -76,18 +76,41 @@ class PrivateAuditApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
-    def test_audit_list_limited_to_user(self):
+    def test_audit_list_limited_to_user_is_staff(self):
         """Test list of audits is limited to authenticated users."""
         other_user = get_user_model().objects.create_user(
-            'other@example.com',
-            'password123'
+            email = 'auditor@example.com',
+            password = 'password123',
+            is_staff = True,
         )
+
         create_audit(user=other_user)
         create_audit(user=self.user)
 
         res = self.client.get(AUDITS_URL)
 
-        audits = Audit.objects.filter(user=self.user)
+        audits = Audit.objects.filter(user=other_user)
         serializer = AuditSerializer(audits, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+
+    def test_filter_audit_by_subarea(self):
+        """Filtering audit by subarea"""
+        area1 = Area.objects.create(user=self.user, name='area1')
+        area2 = Area.objects.create(user=self.user, name='area2')
+        sub_area1 = SubArea.objects.create(user=self.user, name='subarea1', area_id=area1)
+        sub_area2 = SubArea.objects.create(user=self.user, name='subarea2', area_id=area2)
+        r1 = create_audit(user=self.user, title='Audit Internal B4t', sub_area=sub_area1)
+        r2 = create_audit(user=self.user, title='Audit Sertifikasi', sub_area=sub_area2)
+        r3 = create_audit(user=self.user, title='Audit Standardisasi')
+
+        params = {'sub_area': f'{sub_area1.id}, {sub_area2.id}'}
+        res = self.client.get(AUDITS_URL, params=params)
+
+        s1 = AuditSerializer(r1)
+        s2 = AuditSerializer(r2)
+        s3 = AuditSerializer(r3)
+        self.assertIn(s1.data, res.data)
+        self.assertIn(s2.data, res.data)
+        self.assertIn(s3.data, res.data)
+ 
