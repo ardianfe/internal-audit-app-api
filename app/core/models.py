@@ -99,15 +99,17 @@ class Audit(models.Model):
     audit_date = models.CharField(max_length=255)
     area = models.ForeignKey('Area', on_delete=models.CASCADE)
     sub_area = models.ForeignKey('SubArea', on_delete=models.CASCADE)
-    standard = models.CharField(max_length=255)
+    standard = models.ManyToManyField('Standard')
     nc_point = models.CharField(max_length=255)
     nc_source = models.CharField(max_length=255)
     description = models.TextField(blank=True)
+    verification_note = models.TextField(blank=True)
     is_verified = models.BooleanField(default=False)
     verified_date = models.CharField(max_length=255)
 
     def __str__(self):
         return self.title
+
 
 class Correctiveaction(models.Model):
     """Correctiveactions object."""
@@ -127,5 +129,26 @@ class Correctiveaction(models.Model):
         return self.corrective_actions
 
 
+class Standard(models.Model):
+    """Standard as based for audit"""
+    name = models.CharField(max_length=255)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
 
+    def __str__(self):
+        return self.name
 
+class Standardpoint(models.Model):
+    """Standard Point as based for audit."""
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, blank=True)
+    standard_id = models.ForeignKey('Standard', on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return self.name

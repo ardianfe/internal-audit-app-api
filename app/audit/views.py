@@ -11,7 +11,13 @@ from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import Audit, Correctiveaction
+from core.models import (
+    Audit, 
+    Correctiveaction,
+    Standard,
+    Standardpoint,
+)
+
 from audit import serializers
 
 
@@ -74,6 +80,45 @@ class CorrectiveViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Retrieve correctives for authenticated user."""
         return self.queryset.filter(user=self.request.user).order_by('-id')
+
+    def perform_create(self, serilizer):
+        """Add a new data of personel. """
+        serilizer.save(user=self.request.user)
+
+
+class StandardViewSet(viewsets.ModelViewSet):
+    """View for manage correctives APIs."""
+    serializer_class = serializers.StandardSerializer
+    queryset = Standard.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        """Retrieve correctives for authenticated user."""
+        return self.queryset.order_by('-name')
+
+    def perform_create(self, serilizer):
+        """Add a new data of personel. """
+        serilizer.save(user=self.request.user)
+
+
+class StandardpointViewSet(viewsets.ModelViewSet):
+    """View for manage audit APIs."""
+    serializer_class = serializers.StandardpointDetailSerializer
+    queryset = Standardpoint.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        """Retrieve correctives for authenticated user."""
+        return self.queryset.order_by('-name')
+
+    def get_serializer_class(self):
+        """Return the serializer class for request."""
+        if self.action == 'list':
+            return serializers.StandardpointSerializer
+
+        return self.serializer_class
 
     def perform_create(self, serilizer):
         """Add a new data of personel. """

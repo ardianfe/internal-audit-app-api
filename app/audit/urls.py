@@ -14,6 +14,8 @@ from audit import views
 router = DefaultRouter()
 router.register('ncreports', views.AuditViewSet)
 router.register('correctives', views.CorrectiveViewSet)
+router.register('standards', views.StandardViewSet)
+router.register('standardpoints', views.StandardpointViewSet)
 
 app_name = 'audit'
 

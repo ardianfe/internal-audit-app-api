@@ -101,19 +101,21 @@ class ModelTest(TestCase):
         user = create_user()
         area = models.Area.objects.create(user=user, name='PJT')
         sub_area = models.SubArea.objects.create(user=user, name='PJT', area_id=area)
+        standard = models.Standard.objects.create(user=user)
         nc = models.Audit.objects.create(
             user=user,
             title='nc lab semen',
             audit_date='2022-07-05',
             area=area,
             sub_area=sub_area,
-            standard='ISO 90001',
             nc_point='6.1',
             nc_source='Audit Internal',
             description='uraian berkepanjangan',
+            verification_note='ada yang tidak lengkap',
             is_verified=False,
             verified_date='2022-07-11'
         )
+        nc.standard.add(standard)
 
         self.assertEqual(str(nc), nc.title)
     
@@ -136,4 +138,18 @@ class ModelTest(TestCase):
         )
 
         self.assertEqual(str(corrective_action), corrective_action.corrective_actions)
+    
+    def test_create_standard(self):
+        """Test creating a standard is successful"""
+        user = create_user()
+        standard = models.Standard.objects.create(user=user, name='Standard 1')
 
+        self.assertEqual(str(standard), standard.name)
+    
+    def test_create_standard_point(self):
+        """Test creating a standard point is successful"""
+        user = create_user()
+        standard = models.Standard.objects.create(user=user, name='Standard 1')
+        point = models.Standardpoint.objects.create(user=user, standard_id=standard, name='1.1', description=' Standard 1 Point 1.1')
+
+        self.assertEqual(str(point), point.name)

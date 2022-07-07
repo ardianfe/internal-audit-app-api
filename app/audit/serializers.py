@@ -5,7 +5,9 @@ from rest_framework import serializers
 
 from core.models import (
     Audit,
-    Correctiveaction
+    Correctiveaction,
+    Standard,
+    Standardpoint
 )
 
 
@@ -21,7 +23,8 @@ class AuditDetailSerializer(AuditSerializer):
     """Serializer for audit details"""
 
     class Meta(AuditSerializer.Meta):
-        fields = AuditSerializer.Meta.fields + ['is_verified']
+        fields = AuditSerializer.Meta.fields + ['is_verified', 'verification_note']
+        extra_kwargs = {'is_verified': {'default': False}}
 
 
 class CorrectiveSerializer(serializers.ModelSerializer):
@@ -31,3 +34,28 @@ class CorrectiveSerializer(serializers.ModelSerializer):
         model = Correctiveaction
         fields = ['id', 'cause_analysis', 'corrective_actions', 'due_date', 'prepared_by', 'pre_actions', 'links', 'audit']
         read_only_fields = ['id']
+
+
+class StandardSerializer(serializers.ModelSerializer):
+    """Serializer for standards"""
+
+    class Meta:
+        model = Standard
+        fields = ['id', 'name']
+        read_only_fields = ['id']
+
+
+class StandardpointSerializer(serializers.ModelSerializer):
+    """Serializer for standards"""
+
+    class Meta:
+        model = Standardpoint
+        fields = ['id', 'name', 'standard_id']
+        read_only_fields = ['id']
+
+
+class StandardpointDetailSerializer(StandardpointSerializer):
+    """Serializer for audit details"""
+
+    class Meta(StandardpointSerializer.Meta):
+        fields = StandardpointSerializer.Meta.fields + ['description']
