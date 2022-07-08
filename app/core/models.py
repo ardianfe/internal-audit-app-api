@@ -8,6 +8,7 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+from django.utils.translation import gettext_lazy as _
 
 
 class UserManager(BaseUserManager):
@@ -91,6 +92,12 @@ class SubArea(models.Model):
 
 class Audit(models.Model):
     """NcForm Object."""
+
+    class Category(models.TextChoices):
+        MAJOR = 'MJ', _('Major')
+        MINOR = "MI", _('Minor')
+        OBSERVASI = 'OBSV', _('Observasi')
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE,
@@ -106,6 +113,11 @@ class Audit(models.Model):
     verification_note = models.TextField(blank=True)
     is_verified = models.BooleanField(default=False)
     verified_date = models.CharField(max_length=255)
+    cat = models.CharField(
+        max_length=15,
+        choices=Category.choices,
+        default=Category.OBSERVASI,
+    )
 
     def __str__(self):
         return self.title

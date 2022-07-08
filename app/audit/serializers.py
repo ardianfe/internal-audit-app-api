@@ -16,7 +16,7 @@ class AuditSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Audit
-        fields = ['id', 'title', 'audit_date', 'area', 'sub_area', 'standard', 'nc_point', 'nc_source', 'description']
+        fields = ['id', 'title', 'audit_date', 'area', 'sub_area', 'standard', 'nc_point', 'nc_source', 'description', 'cat']
         read_only_fields = ['id']
 
 class AuditDetailSerializer(AuditSerializer):

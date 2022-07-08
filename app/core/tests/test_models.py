@@ -113,7 +113,8 @@ class ModelTest(TestCase):
             description='uraian berkepanjangan',
             verification_note='ada yang tidak lengkap',
             is_verified=False,
-            verified_date='2022-07-11'
+            verified_date='2022-07-11',
+            cat='mayor'
         )
         nc.standard.add(standard)
 
@@ -125,7 +126,7 @@ class ModelTest(TestCase):
         personel = models.Personel.objects.create(user=user)
         area = models.Area.objects.create(user=user, name='PJT')
         sub_area = models.SubArea.objects.create(user=user, name='PJT', area_id=area)
-        audit = models.Audit.objects.create(user=user, area=area, sub_area=sub_area)
+        audit = models.Audit.objects.create(user=user, area=area, sub_area=sub_area, cat='MJ')
         corrective_action = models.Correctiveaction.objects.create(
             user=user,
             cause_analysis='penyebab terbesar adalah dari akarnya sendiri',
@@ -134,7 +135,7 @@ class ModelTest(TestCase):
             prepared_by=personel,
             pre_actions='tindakan pencegahan',
             links="http://example.com",
-            audit=audit
+            audit=audit,
         )
 
         self.assertEqual(str(corrective_action), corrective_action.corrective_actions)
