@@ -1,6 +1,7 @@
 """
 Test for models
 """
+from unittest.mock import patch 
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model
@@ -154,3 +155,13 @@ class ModelTest(TestCase):
         point = models.Standardpoint.objects.create(user=user, standard_id=standard, name='1.1', description=' Standard 1 Point 1.1')
 
         self.assertEqual(str(point), point.name)
+
+    @patch('core.models.uuid.uuid4')
+    def test_recipe_file_name_uuid(self, mock_uuid):
+        """Test generating document path"""
+        uuid = 'test-uuid'
+        mock_uuid.return_value = uuid
+        file_path = models.audit_corrective_file_path(None, 'example.pdf')
+
+        self.assertEqual(file_path, f'uploads/audit/correctives/{uuid}.pdf')
+

@@ -28,7 +28,7 @@ from audit import serializers
                 'sub-area',
                 OpenApiTypes.STR,
                 description='Coma separated list of ID to filter',
-            )
+            ),
         ]
     )
 )
@@ -70,6 +70,18 @@ class AuditViewSet(viewsets.ModelViewSet):
         serilizer.save(user=self.request.user)
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                'audit',
+                OpenApiTypes.STR,
+                description='Coma separated list of ID to filter',
+            ),
+        ]
+    )
+)
+
 class CorrectiveViewSet(viewsets.ModelViewSet):
     """View for manage correctives APIs."""
     serializer_class = serializers.CorrectiveSerializer
@@ -79,7 +91,18 @@ class CorrectiveViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Retrieve correctives for authenticated user."""
-        return self.queryset.filter(user=self.request.user).order_by('-id')
+        # return self.queryset.filter(user=self.request.user).order_by('-id')
+        user = self.request.user
+        if user.is_staff:
+            return self.queryset.filter(user=self.request.user).order_by('-id')
+        
+        audit = self.request.query_params.get('audit')
+        queryset = self.queryset
+        if audit:
+            audit_id = audit
+            queryset = queryset.filter(audit=audit_id)
+        
+        return queryset.order_by('-id').distinct()
 
     def perform_create(self, serilizer):
         """Add a new data of personel. """

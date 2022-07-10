@@ -1,14 +1,27 @@
 """
 Database models.
 """
+import uuid
+import os
+
 from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
     PermissionsMixin,
 )
-from django.utils.translation import gettext_lazy as _
+
+
+def audit_corrective_file_path(instance, filename):
+    """Generate file path for new corrective action."""
+    ext = os.path.splitext(filename)[1]
+    filename = f'{uuid.uuid4()}{ext}'
+
+    return os.path.join('uploads', 'audit/correctives', filename)
+
+
 
 
 class UserManager(BaseUserManager):
@@ -136,6 +149,7 @@ class Correctiveaction(models.Model):
     pre_actions = models.TextField(blank=True)
     links = models.CharField(max_length=255)
     audit = models.OneToOneField('Audit', on_delete=models.CASCADE)
+    evidence = models.FileField(null=True, upload_to=audit_corrective_file_path)
 
     def __str__(self):
         return self.corrective_actions
