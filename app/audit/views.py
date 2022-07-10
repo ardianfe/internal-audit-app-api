@@ -93,14 +93,15 @@ class CorrectiveViewSet(viewsets.ModelViewSet):
         """Retrieve correctives for authenticated user."""
         # return self.queryset.filter(user=self.request.user).order_by('-id')
         user = self.request.user
-        if user.is_staff:
-            return self.queryset.filter(user=self.request.user).order_by('-id')
+        # if user.is_staff:
+        #     return self.queryset.filter(user=self.request.user).order_by('-id')
         
         audit = self.request.query_params.get('audit')
         queryset = self.queryset
         if audit:
             audit_id = audit
             queryset = queryset.filter(audit=audit_id)
+        print(audit)
         
         return queryset.order_by('-id').distinct()
 
