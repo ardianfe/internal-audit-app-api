@@ -47,15 +47,17 @@ class AuditViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Retrieve personels for authenticated user."""
         user = self.request.user
-        # if user.is_staff:
-        #     return self.queryset.filter(user=self.request.user).order_by('-id')
+        
         
         sub_area = self.request.query_params.get('sub-area')
         queryset = self.queryset
         if sub_area:
             sub_area_id = sub_area
             queryset = queryset.filter(sub_area=sub_area_id)
-            
+        
+        if user.is_staff:
+            return queryset.filter(user=self.request.user).order_by('-id').distinct()
+
         return queryset.order_by('-id').distinct()
 
     def get_serializer_class(self):
