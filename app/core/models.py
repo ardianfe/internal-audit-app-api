@@ -108,7 +108,7 @@ class Audit(models.Model):
 
     class Category(models.TextChoices):
         MAJOR = 'MJ', _('Major')
-        MINOR = "MI", _('Minor')
+        MINOR = 'MI', _('Minor')
         OBSERVASI = 'OBSV', _('Observasi')
 
     user = models.ForeignKey(
@@ -144,12 +144,13 @@ class Correctiveaction(models.Model):
     )
     cause_analysis = models.TextField(blank=True)
     corrective_actions = models.TextField(blank=True)
-    due_date = models.CharField(max_length=255)
+    due_date = models.CharField(max_length=255, blank=True)
     prepared_by = models.ForeignKey('Personel', blank=True, on_delete=models.CASCADE)
     pre_actions = models.TextField(blank=True)
-    links = models.CharField(max_length=255)
+    links = models.CharField(max_length=255, blank=True)
     audit = models.OneToOneField('Audit', on_delete=models.CASCADE)
-    evidence = models.FileField(null=True, upload_to=audit_corrective_file_path)
+    evidence = models.FileField(null=True, upload_to=audit_corrective_file_path, blank=True)
+    is_ready = models.BooleanField(default=False)
 
     def __str__(self):
         return self.corrective_actions

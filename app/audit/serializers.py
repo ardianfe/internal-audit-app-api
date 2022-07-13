@@ -32,8 +32,9 @@ class CorrectiveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Correctiveaction
-        fields = ['id', 'cause_analysis', 'corrective_actions', 'due_date', 'prepared_by', 'pre_actions', 'links', 'audit']
+        fields = ['id', 'cause_analysis', 'corrective_actions', 'due_date', 'prepared_by', 'pre_actions', 'links', 'audit', 'is_ready']
         read_only_fields = ['id']
+        extra_kwargs = {'is_ready': {'default': False}}
 
 
 class StandardSerializer(serializers.ModelSerializer):
