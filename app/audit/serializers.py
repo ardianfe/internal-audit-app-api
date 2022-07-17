@@ -17,13 +17,13 @@ class AuditSerializer(serializers.ModelSerializer):
     class Meta:
         model = Audit
         fields = ['id', 'title', 'audit_date', 'area', 'sub_area', 'standard', 'nc_point', 'nc_source', 'description', 'cat']
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'user']
 
 class AuditDetailSerializer(AuditSerializer):
     """Serializer for audit details"""
 
     class Meta(AuditSerializer.Meta):
-        fields = AuditSerializer.Meta.fields + ['is_verified', 'verification_note']
+        fields = AuditSerializer.Meta.fields + ['is_verified', 'verification_note', 'user']
         extra_kwargs = {'is_verified': {'default': False}}
 
 
@@ -32,8 +32,8 @@ class CorrectiveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Correctiveaction
-        fields = ['id', 'cause_analysis', 'corrective_actions', 'due_date', 'prepared_by', 'pre_actions', 'links', 'audit', 'is_ready']
-        read_only_fields = ['id']
+        fields = ['id', 'cause_analysis', 'corrective_actions', 'due_date', 'prepared_by', 'pre_actions', 'links', 'audit', 'is_ready', 'user']
+        read_only_fields = ['id', 'user']
         extra_kwargs = {'is_ready': {'default': False}}
 
 
