@@ -71,21 +71,21 @@ class PrivatePersonelAPITest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
-    def test_personel_list_limited_to_user(self):
-        """Test list of personel is limited to authenticated user."""
-        other_user = get_user_model().objects.create_user(
-            'other@example.com',
-            'password123'
-        )
-        create_personel(user=other_user)
-        create_personel(user=self.user)
+    # def test_personel_list_limited_to_user(self):
+    #     """Test list of personel is limited to authenticated user."""
+    #     other_user = get_user_model().objects.create_user(
+    #         'other@example.com',
+    #         'password123'
+    #     )
+    #     create_personel(user=other_user)
+    #     create_personel(user=self.user)
 
-        res = self.client.get(PERSONELS_URL)
+    #     res = self.client.get(PERSONELS_URL)
 
-        personels = Personel.objects.filter(user=self.user)
-        serializer = PersonelSerializer(personels, many=True)
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
+    #     personels = Personel.objects.filter(user=self.user)
+    #     serializer = PersonelSerializer(personels, many=True)
+    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(res.data, serializer.data)
 
     def test_get_personel_detail(self):
         """Test get personel detail."""

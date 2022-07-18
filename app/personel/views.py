@@ -28,7 +28,9 @@ class PersonelViewSet(viewsets.ModelViewSet):
         if self.request.user.is_superuser:
             return self.queryset.order_by('-id')
 
-        return self.queryset.filter(user=self.request.user).order_by('-id')
+        # return self.queryset.filter(user=self.request.user).order_by('-id')
+        return self.queryset.order_by('-id')
+    
 
     def get_serializer_class(self):
         """Return the serializer class for request."""
