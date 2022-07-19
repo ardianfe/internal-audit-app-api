@@ -48,7 +48,6 @@ class AuditViewSet(viewsets.ModelViewSet):
         """Retrieve personels for authenticated user."""
         user = self.request.user
         
-        
         sub_area = self.request.query_params.get('sub-area')
         queryset = self.queryset
         if sub_area:
