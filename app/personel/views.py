@@ -1,6 +1,12 @@
 """
 Views for the personel APIs.
 """
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes,
+)
 from rest_framework import (
     viewsets,
     mixins,
@@ -67,6 +73,19 @@ class AreaViewSet(viewsets.ModelViewSet):
         """Add a new area. """
         serilizer.save(user=self.request.user)
 
+
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                'area',
+                OpenApiTypes.STR,
+                description='Coma separated list of ID to filter',
+            )
+        ]
+    )
+)
+
 class SubAreaViewSet(viewsets.ModelViewSet):
     """Manage area in the database"""
     serializer_class = serializers.SubAreaDetailSerializer
@@ -74,9 +93,27 @@ class SubAreaViewSet(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+    # def get_queryset(self):
+    #     """Filter queryset to authenticated.user"""
+    #     return self.queryset.order_by('-name')
+    
     def get_queryset(self):
-        """Filter queryset to authenticated.user"""
-        return self.queryset.order_by('-name')
+        """Retrieve personels for authenticated user."""
+        user = self.request.user
+        
+        area = self.request.query_params.get('area')
+        queryset = self.queryset
+        if area:
+            area_id = area
+            queryset = queryset.filter(area_id=area_id)
+        
+        # if user.is_staff and user.is_superuser:
+        #     return queryset.order_by('-id').distinct()
+        
+        # if user.is_staff:
+        #     return queryset.filter(user=self.request.user).order_by('-id').distinct()
+
+        return queryset.order_by('-id').distinct()
 
     def get_serializer_class(self):
         """Return the serializer class for request."""
