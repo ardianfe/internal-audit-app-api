@@ -8,10 +8,10 @@ from rest_framework.routers import DefaultRouter
 from user import views
 
 router = DefaultRouter()
+router.register('detail', views.UserViewSet)
 
 
 app_name = 'user'
-router.register('detail', views.UserViewSet)
 
 urlpatterns = [
     path('create/', views.CreateUserView.as_view(), name='create'),
