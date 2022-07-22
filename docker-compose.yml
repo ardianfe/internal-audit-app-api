@@ -1,10 +1,5 @@
 version: "3.9"
 
-networks:
-  web:
-    external: true
-  internal:
-    external: false
 
 services:
   app:
@@ -26,14 +21,6 @@ services:
       - DB_NAME=devdb
       - DB_USER=devuser
       - DB_PASS=changeme
-    labels:
-      - traefik.http.routers.api.rule=Host(`apiia.laporan.online`)
-      - traefik.http.routers.api.tls=true
-      - traefik.http.routers.api.tls.certresolver=lets-encrypt
-      - traefik.port=80
-    networks:
-      - internal
-      - web
     depends_on:
       - db
 
@@ -45,11 +32,7 @@ services:
       - POSTGRES_DB=devdb
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=changeme
-    networks:
-      - internal
-    labels:
-      - traefik.enable=false
-
+      
 volumes:
   dev-db-data:
   dev-static-data:

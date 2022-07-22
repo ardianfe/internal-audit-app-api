@@ -54,6 +54,9 @@ class AuditViewSet(viewsets.ModelViewSet):
             sub_area_id = sub_area
             queryset = queryset.filter(sub_area=sub_area_id)
         
+        if user.is_staff and user.is_superuser:
+            return queryset.order_by('-id').distinct()
+        
         if user.is_staff:
             return queryset.filter(user=self.request.user).order_by('-id').distinct()
 

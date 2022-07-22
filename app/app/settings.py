@@ -26,7 +26,10 @@ SECRET_KEY = 'django-insecure-3(39@5gq)2*r#^s$8%*ue6yytky*rxa(r@*4kgp6x2k$ts=5rd
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'apiia.laporan.online'
+    'localhost',
+    '127.0.0.1',
+    'apiia.laporan.online',
+    'apiia.b4t.go,id',
 ]
 
 
