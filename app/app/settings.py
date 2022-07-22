@@ -25,7 +25,9 @@ SECRET_KEY = 'django-insecure-3(39@5gq)2*r#^s$8%*ue6yytky*rxa(r@*4kgp6x2k$ts=5rd
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'apiia.laporan.online'
+]
 
 
 # Application definition
