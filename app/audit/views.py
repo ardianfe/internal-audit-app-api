@@ -40,10 +40,6 @@ class AuditViewSet(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    # def _params_to_ints(self,qs):
-    #     """Convert a list of strings to integers."""
-    #     return [int(str_id) for str_id in qs.split(',')]
-
     def get_queryset(self):
         """Retrieve personels for authenticated user."""
         user = self.request.user
