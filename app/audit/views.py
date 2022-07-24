@@ -10,6 +10,8 @@ from drf_spectacular.utils import (
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
+
 
 from core.models import (
     Audit, 
@@ -21,6 +23,12 @@ from core.models import (
 from audit import serializers
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+
 @extend_schema_view(
     list=extend_schema(
         parameters=[
@@ -28,13 +36,14 @@ from audit import serializers
                 'sub-area',
                 OpenApiTypes.STR,
                 description='Coma separated list of ID to filter',
-            )
+            ),
         ]
     )
 )
 
 class AuditViewSet(viewsets.ModelViewSet):
     """View for manage audit APIs."""
+    pagination_class = StandardResultsSetPagination
     serializer_class = serializers.AuditDetailSerializer
     queryset = Audit.objects.all()
     authentication_classes = [TokenAuthentication]
