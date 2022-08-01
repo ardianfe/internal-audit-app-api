@@ -52,6 +52,11 @@ class StandardResultsSetPagination(PageNumberPagination):
                 OpenApiTypes.STR,
                 description='input : sub_area, area, cat, id, standard, nc_point',
             ),
+             OpenApiParameter(
+                'auditor',
+                OpenApiTypes.STR,
+                description='auditor = 1, auditee = 0',
+            ),
         ]
     )
 )
@@ -71,12 +76,16 @@ class AuditViewSet(viewsets.ModelViewSet):
         area_id = self.request.query_params.get('area')
         sub_area = self.request.query_params.get('sub-area')
         short = self.request.query_params.get('short')
+        auditor = self.request.query_params.get('auditor')
         queryset = self.queryset
 
-        print(standard_id)
-
+        print(type(auditor))
         if short == None:
             short = 'id'
+
+        if auditor == '1':
+            print('true')
+            return queryset.filter(user=self.request.user).order_by(short).distinct()
 
         if area_id:
             area_id = area_id
@@ -93,8 +102,7 @@ class AuditViewSet(viewsets.ModelViewSet):
         if user.is_staff and user.is_superuser:
             return queryset.order_by(short).distinct()
         
-        if user.is_staff:
-            return queryset.filter(user=self.request.user).order_by(short).distinct()
+        
 
         
         return queryset.order_by(short).distinct()
@@ -109,6 +117,8 @@ class AuditViewSet(viewsets.ModelViewSet):
     def perform_create(self, serilizer):
         """Add a new data of personel. """
         serilizer.save(user=self.request.user)
+
+
 
 
 @extend_schema_view(
@@ -188,3 +198,4 @@ class StandardpointViewSet(viewsets.ModelViewSet):
     def perform_create(self, serilizer):
         """Add a new data of personel. """
         serilizer.save(user=self.request.user)
+
