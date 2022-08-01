@@ -48,7 +48,7 @@ class StandardResultsSetPagination(PageNumberPagination):
                 description='Coma separated list of ID to filter',
             ),
             OpenApiParameter(
-                'short',
+                'sort',
                 OpenApiTypes.STR,
                 description='input : sub_area, area, cat, id, standard, nc_point',
             ),
@@ -75,11 +75,10 @@ class AuditViewSet(viewsets.ModelViewSet):
         standard_id = self.request.query_params.get('standard')
         area_id = self.request.query_params.get('area')
         sub_area = self.request.query_params.get('sub-area')
-        short = self.request.query_params.get('short')
+        short = self.request.query_params.get('sort')
         auditor = self.request.query_params.get('auditor')
         queryset = self.queryset
 
-        print(type(auditor))
         if short == None:
             short = 'id'
 
