@@ -33,9 +33,24 @@ class StandardResultsSetPagination(PageNumberPagination):
     list=extend_schema(
         parameters=[
             OpenApiParameter(
+                'area',
+                OpenApiTypes.STR,
+                description='area id to filter',
+            ),
+            OpenApiParameter(
+                'standard',
+                OpenApiTypes.STR,
+                description='standar to filter',
+            ),
+            OpenApiParameter(
                 'sub-area',
                 OpenApiTypes.STR,
                 description='Coma separated list of ID to filter',
+            ),
+            OpenApiParameter(
+                'short',
+                OpenApiTypes.STR,
+                description='input : sub_area, area, cat, id, standard, nc_point',
             ),
         ]
     )
@@ -52,20 +67,37 @@ class AuditViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Retrieve personels for authenticated user."""
         user = self.request.user
-        
+        standard_id = self.request.query_params.get('standard')
+        area_id = self.request.query_params.get('area')
         sub_area = self.request.query_params.get('sub-area')
+        short = self.request.query_params.get('short')
         queryset = self.queryset
+
+        print(standard_id)
+
+        if short == None:
+            short = 'id'
+
+        if area_id:
+            area_id = area_id
+            queryset = queryset.filter(area=area_id).order_by(short).distinct()
+        
+        if standard_id:
+            standard_id = standard_id
+            queryset = queryset.filter(standard__id=standard_id).order_by(short).distinct()
+
         if sub_area:
             sub_area_id = sub_area
-            queryset = queryset.filter(sub_area=sub_area_id)
+            queryset = queryset.filter(sub_area=sub_area_id).order_by(short).distinct()
         
         if user.is_staff and user.is_superuser:
-            return queryset.order_by('-id').distinct()
+            return queryset.order_by(short).distinct()
         
         if user.is_staff:
-            return queryset.filter(user=self.request.user).order_by('-id').distinct()
+            return queryset.filter(user=self.request.user).order_by(short).distinct()
 
-        return queryset.order_by('-id').distinct()
+        
+        return queryset.order_by(short).distinct()
 
     def get_serializer_class(self):
         """Return the serializer class for request."""

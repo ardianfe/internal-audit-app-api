@@ -119,7 +119,7 @@ class Audit(models.Model):
     audit_date = models.CharField(max_length=255)
     area = models.ForeignKey('Area', on_delete=models.CASCADE)
     sub_area = models.ForeignKey('SubArea', on_delete=models.CASCADE)
-    standard = models.ManyToManyField('Standard')
+    standard = models.ManyToManyField('Standard', related_name='standards')
     nc_point = models.CharField(max_length=255)
     nc_source = models.CharField(max_length=255)
     description = models.TextField(blank=True)
